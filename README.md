@@ -25,3 +25,4 @@ File or Folder | Purpose
 Learn more at https://cap.cloud.sap/docs/get-started/.
 
 Release version 1.0.0
+adding tags
