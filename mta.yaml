@@ -7,7 +7,6 @@ modules:
     type: nodejs
     path: gen/srv
     requires:
-      - name: capSample-db
       - name: capSample-auth
     provides:
       - name: srv-api
@@ -18,13 +17,6 @@ modules:
       instances: 1
     build-parameters:
       builder: npm-ci
-  - name: capSample-db-deployer
-    type: hdb
-    path: gen/db
-    requires:
-      - name: capSample-db
-    parameters:
-      buildpack: nodejs_buildpack
   - name: capSample-destination-content
     type: com.sap.application.content
     requires:
@@ -77,11 +69,6 @@ modules:
           app-protocol: ${protocol}
           app-uri: ${default-uri}
 resources:
-  - name: capSample-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: schema
   - name: capSample-auth
     type: org.cloudfoundry.managed-service
     parameters:
