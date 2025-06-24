@@ -7,7 +7,6 @@ modules:
     type: nodejs
     path: gen/srv
     requires:
-      - name: capSample-db
       - name: capSample-auth
     provides:
       - name: srv-api
@@ -18,13 +17,6 @@ modules:
       instances: 1
     build-parameters:
       builder: npm-ci
-  - name: capSample-db-deployer
-    type: hdb
-    path: gen/db
-    requires:
-      - name: capSample-db
-    parameters:
-      buildpack: nodejs_buildpack
   - name: capSample-destination-content
     type: com.sap.application.content
     requires:
@@ -55,12 +47,28 @@ modules:
           existing_destinations_policy: ignore
     build-parameters:
       no-source: true
-resources:
-  - name: capSample-db
-    type: com.sap.xs.hdi-container
+
+  - name: capSample
+    type: approuter.nodejs
+    path: app/router
     parameters:
-      service: hana
-      service-plan: hdi-shared
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: capSample-auth
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+resources:
   - name: capSample-auth
     type: org.cloudfoundry.managed-service
     parameters:
